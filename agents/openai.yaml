@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI+实拍 Pipeline"
+  short_description: "专业级 AI+实拍镜头转换、关键帧、匹配、提示词与质检"
+  default_prompt: "使用 $ai-liveaction-pipeline 把我的原始实拍视频和参考资产整理成一套包含关键帧、机位匹配、空背景、融合提示词和质检的 AI+实拍生产包。"

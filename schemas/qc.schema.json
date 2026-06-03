@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Liveaction QC Entry",
+  "type": "object",
+  "required": [
+    "frame_group_id",
+    "identity_consistent",
+    "outfit_consistent",
+    "prop_state_consistent",
+    "perspective_valid",
+    "ground_contact_valid",
+    "status"
+  ],
+  "properties": {
+    "frame_group_id": { "type": "string" },
+    "identity_consistent": { "type": "boolean" },
+    "outfit_consistent": { "type": "boolean" },
+    "prop_state_consistent": { "type": "boolean" },
+    "motion_direction_consistent": { "type": "boolean" },
+    "light_direction_consistent": { "type": "boolean" },
+    "perspective_valid": { "type": "boolean" },
+    "ground_contact_valid": { "type": "boolean" },
+    "contact_shadow_valid": { "type": "boolean" },
+    "occlusion_valid": { "type": "boolean" },
+    "status": {
+      "type": "string",
+      "enum": ["pass", "needs_revision", "blocked"]
+    },
+    "notes": { "type": "string" }
+  }
+}

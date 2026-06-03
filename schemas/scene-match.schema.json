@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Liveaction Scene Match",
+  "type": "object",
+  "required": [
+    "frame_id",
+    "scene_id",
+    "scores",
+    "total_score",
+    "result"
+  ],
+  "properties": {
+    "frame_id": { "type": "string" },
+    "scene_id": { "type": "string" },
+    "scores": {
+      "type": "object",
+      "required": [
+        "horizon_alignment",
+        "camera_height_match",
+        "vanishing_direction_match",
+        "lens_feel_match",
+        "subject_staging_support",
+        "ground_plane_match",
+        "light_direction_match",
+        "action_support_match"
+      ],
+      "properties": {
+        "horizon_alignment": { "type": "number" },
+        "camera_height_match": { "type": "number" },
+        "vanishing_direction_match": { "type": "number" },
+        "lens_feel_match": { "type": "number" },
+        "subject_staging_support": { "type": "number" },
+        "ground_plane_match": { "type": "number" },
+        "light_direction_match": { "type": "number" },
+        "action_support_match": { "type": "number" }
+      }
+    },
+    "total_score": { "type": "number" },
+    "result": {
+      "type": "string",
+      "enum": ["direct_fuse", "empty_plate_first", "new_camera_needed"]
+    },
+    "notes": { "type": "string" }
+  }
+}

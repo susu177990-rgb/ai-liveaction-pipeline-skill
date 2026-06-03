@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Liveaction Frame Manifest",
+  "type": "object",
+  "required": [
+    "frame_id",
+    "timecode",
+    "frame_type",
+    "image_path",
+    "status"
+  ],
+  "properties": {
+    "frame_id": { "type": "string" },
+    "timecode": { "type": "string" },
+    "frame_type": {
+      "type": "string",
+      "enum": ["anchor", "motion", "transition"]
+    },
+    "image_path": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["extracted", "diagnosed", "matched", "preprocess_required", "plate_ready", "fusion_ready", "qc_ready", "blocked"]
+    },
+    "diagnosis": {
+      "type": "object",
+      "properties": {
+        "shot_size": { "type": "string" },
+        "camera_height": { "type": "string" },
+        "camera_direction": { "type": "string" },
+        "lens_feel": { "type": "string" },
+        "subject_position": { "type": "string" },
+        "body_orientation": { "type": "string" },
+        "contact_points": { "type": "array", "items": { "type": "string" } },
+        "horizon_line": { "type": "string" },
+        "vanishing_direction": { "type": "string" }
+      }
+    },
+    "required_layers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["subject_mask", "face_mask", "outfit_mask", "hand_mask", "prop_mask", "depth_map", "pose_map", "edge_map", "contact_map"]
+      }
+    },
+    "layer_paths": {
+      "type": "object",
+      "properties": {
+        "subject_mask": { "type": "string" },
+        "face_mask": { "type": "string" },
+        "outfit_mask": { "type": "string" },
+        "hand_mask": { "type": "string" },
+        "prop_mask": { "type": "string" },
+        "depth_map": { "type": "string" },
+        "pose_map": { "type": "string" },
+        "edge_map": { "type": "string" },
+        "contact_map": { "type": "string" }
+      }
+    },
+    "scene_match": {
+      "type": "object",
+      "properties": {
+        "scene_id": { "type": "string" },
+        "score": { "type": "number" },
+        "result": { "type": "string", "enum": ["direct_fuse", "empty_plate_first", "new_camera_needed"] }
+      }
+    },
+    "prompts": {
+      "type": "object",
+      "properties": {
+        "empty_plate_prompt_path": { "type": "string" },
+        "fusion_prompt_path": { "type": "string" },
+        "repair_prompt_path": { "type": "string" }
+      }
+    }
+  }
+}

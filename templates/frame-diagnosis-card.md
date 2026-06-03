@@ -1,0 +1,25 @@
+# Frame Diagnosis Card
+
+- `frame_id`:
+- `timecode`:
+- `frame_type`:
+- `shot_size`:
+- `camera_height`:
+- `camera_direction`:
+- `lens_feel`:
+- `subject_screen_ratio`:
+- `subject_position`:
+- `body_orientation`:
+- `action_state`:
+- `expression_state`:
+- `hand_state`:
+- `foot_or_body_contact_points`:
+- `foreground_occlusion`:
+- `midground_structure`:
+- `replaceable_background_area`:
+- `horizon_line`:
+- `vanishing_direction`:
+- `main_perspective_lines`:
+- `original_light_reuse`:
+- `discard_elements`:
+- `notes`:

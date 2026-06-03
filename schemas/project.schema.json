@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Liveaction Project Manifest",
+  "type": "object",
+  "required": [
+    "project_name",
+    "project_code",
+    "created_at",
+    "status",
+    "source_video",
+    "delivery_target",
+    "paths"
+  ],
+  "properties": {
+    "project_name": { "type": "string" },
+    "project_code": { "type": "string" },
+    "created_at": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["intake", "ingest", "keyframes", "diagnosis", "assets", "match", "preprocess", "plate", "fusion", "qc", "delivery", "blocked"]
+    },
+    "delivery_target": {
+      "type": "object",
+      "required": ["aspect_ratio", "platform", "use_case"],
+      "properties": {
+        "aspect_ratio": { "type": "string" },
+        "platform": { "type": "string" },
+        "use_case": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "source_video": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "path": { "type": "string" },
+        "duration_seconds": { "type": ["number", "null"] },
+        "frame_rate": { "type": ["number", "null"] },
+        "resolution": { "type": ["string", "null"] },
+        "codec": { "type": ["string", "null"] }
+      }
+    },
+    "assets": {
+      "type": "object",
+      "properties": {
+        "subject": { "type": "array", "items": { "type": "string" } },
+        "scene": { "type": "array", "items": { "type": "string" } },
+        "prop": { "type": "array", "items": { "type": "string" } },
+        "style": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "paths": {
+      "type": "object",
+      "required": [
+        "brief_dir",
+        "source_video_dir",
+        "keyframes_dir",
+        "assets_dir",
+        "scene_library_dir",
+        "preprocess_dir",
+        "empty_plate_dir",
+        "fusion_dir",
+        "qc_dir",
+        "delivery_dir",
+        "manifests_dir"
+      ],
+      "properties": {
+        "brief_dir": { "type": "string" },
+        "source_video_dir": { "type": "string" },
+        "keyframes_dir": { "type": "string" },
+        "assets_dir": { "type": "string" },
+        "scene_library_dir": { "type": "string" },
+        "preprocess_dir": { "type": "string" },
+        "empty_plate_dir": { "type": "string" },
+        "fusion_dir": { "type": "string" },
+        "qc_dir": { "type": "string" },
+        "delivery_dir": { "type": "string" },
+        "manifests_dir": { "type": "string" }
+      }
+    },
+    "notes": { "type": "string" }
+  }
+}
