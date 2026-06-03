@@ -1,27 +1,26 @@
-# AI Liveaction Pipeline Skill
+# AI Liveaction Pipeline Skill / AI+实拍生产管线 Skill
 
-Professional AI + live-action production pipeline for turning a source video and reference assets into a structured, reviewable delivery package: project manifest, video ingest metadata, extracted keyframes, scene-camera match results, preprocessing requirements, prompt packs, QC outputs, and final delivery summaries.
+Professional AI + live-action pipeline for turning a source video and reference assets into a structured, reviewable package with manifests, keyframes, scene-match results, preprocessing requirements, prompt packs, QC outputs, and final delivery summaries.  
+这是一个面向 AI+实拍项目的专业生产管线，用原始视频和参考资产整理出可追踪、可复检的项目包，包括 manifest、关键帧、场景匹配、预处理要求、提示词包、质检结果和最终交付摘要。
 
-## Features
+## Features / 特性
 
-This repo is useful when you need a repeatable workflow for:
+- AI + live-action shot conversion / AI+实拍镜头转换
+- keyframe extraction from source footage / 从原视频抽取关键帧
+- scene-camera matching before background replacement / 换景前做场景机位匹配
+- empty plate and fusion prompt packaging / 输出空背景与融合提示词包
+- continuity control before downstream video generation / 下游视频生成前做连续性质检
 
-- AI + live-action shot conversion
-- keyframe extraction from source footage
-- scene/camera matching before background replacement
-- empty plate and fusion prompt packaging
-- continuity control before downstream video generation
+## What You Get / 仓库内容
 
-## What You Get
+- skill entrypoint and routing docs: [SKILL.md](./SKILL.md)
+- workflow stages: [workflows/](./workflows)
+- reusable templates: [templates/](./templates)
+- JSON schemas: [schemas/](./schemas)
+- local automation scripts: [scripts/](./scripts)
+- reference cases: [examples/](./examples)
 
-- Skill entrypoint and routing docs in [SKILL.md](./SKILL.md)
-- Stage-by-stage workflow docs in [workflows/](./workflows)
-- Reusable templates in [templates/](./templates)
-- JSON schemas for manifests in [schemas/](./schemas)
-- Local automation scripts in [scripts/](./scripts)
-- End-to-end reference cases in [examples/](./examples)
-
-## Repository Structure
+## Repository Structure / 仓库结构
 
 ```text
 .
@@ -38,30 +37,23 @@ This repo is useful when you need a repeatable workflow for:
 └── workflows/
 ```
 
-## Installation
+## Installation / 安装
 
 - Python 3.10+
 - `ffmpeg` and `ffprobe`
-- Python packages:
+- Python packages / Python 依赖:
   - `Pillow`
   - `jsonschema`
 
-Install Python dependencies:
-
 ```bash
 python3 -m pip install Pillow jsonschema
-```
-
-Check video tooling:
-
-```bash
 ffmpeg -version
 ffprobe -version
 ```
 
-## Usage
+## Usage / 用法
 
-Minimal end-to-end command flow:
+Minimal end-to-end command flow / 最小端到端命令流程:
 
 ```bash
 $ python3 scripts/init_project.py ./demo-project --project-name "Mars Base Spot"
@@ -72,9 +64,9 @@ $ python3 scripts/validate_project.py ./demo-project
 $ python3 scripts/compile_qc_report.py ./demo-project --output ./demo-project/08_qc/final-qc-report.md
 ```
 
-## Quickstart
+## Quickstart / 快速开始
 
-### 1. Create a project scaffold
+### 1. Create a project scaffold / 创建项目骨架
 
 ```bash
 python3 scripts/init_project.py ./demo-project \
@@ -84,7 +76,7 @@ python3 scripts/init_project.py ./demo-project \
   --use-case "ai-liveaction-conversion"
 ```
 
-This creates the standard working layout:
+Standard working layout / 标准目录结构:
 
 ```text
 00_brief/
@@ -100,14 +92,14 @@ This creates the standard working layout:
 manifests/
 ```
 
-### 2. Probe the source video
+### 2. Probe the source video / 探测源视频
 
 ```bash
 python3 scripts/probe_video.py ./demo-project/01_source_video/source.mp4 \
   --output ./demo-project/00_brief/video-ingest.json
 ```
 
-### 3. Extract keyframes
+### 3. Extract keyframes / 抽取关键帧
 
 ```bash
 python3 scripts/extract_keyframes.py \
@@ -118,7 +110,7 @@ python3 scripts/extract_keyframes.py \
   > ./demo-project/manifests/frames-extracted.json
 ```
 
-### 4. Build frame manifests and keyframe table
+### 4. Build frame manifests / 生成帧 manifest
 
 ```bash
 python3 scripts/build_frame_index.py \
@@ -127,13 +119,13 @@ python3 scripts/build_frame_index.py \
   --markdown-output ./demo-project/02_keyframes/keyframe-table.md
 ```
 
-### 5. Validate the project package
+### 5. Validate the package / 校验项目包
 
 ```bash
 python3 scripts/validate_project.py ./demo-project
 ```
 
-### 6. Compile a final QC summary
+### 6. Compile final QC summary / 汇总最终 QC
 
 ```bash
 python3 scripts/compile_qc_report.py \
@@ -141,39 +133,36 @@ python3 scripts/compile_qc_report.py \
   --output ./demo-project/08_qc/final-qc-report.md
 ```
 
-## Core Workflow
-
-The intended pipeline is:
+## Core Workflow / 核心流程
 
 ```text
 /intake -> /ingest -> /keyframes -> /diagnose -> /assets -> /match -> /preprocess -> /plate -> /fusion -> /qc -> /deliver
 ```
 
-Routing logic and fallback rules are documented in [flowchart.md](./flowchart.md).
+Routing logic and fallback rules are documented in [flowchart.md](./flowchart.md).  
+路由逻辑和回退规则见 [flowchart.md](./flowchart.md)。
 
-## Common Tasks
+## Common Tasks / 常见任务
 
-### Initialize a new client job
+### Initialize a new client job / 初始化新项目
 
-Use `scripts/init_project.py` first, then fill:
+Use `scripts/init_project.py`, then fill `00_brief/project-brief.md` and `manifests/project.json`.  
+先运行 `scripts/init_project.py`，再补全 `00_brief/project-brief.md` 和 `manifests/project.json`。
 
-- `00_brief/project-brief.md`
-- `manifests/project.json`
-
-Reference:
+References / 参考:
 
 - [workflows/00-project-intake.md](./workflows/00-project-intake.md)
 - [templates/project-brief-template.md](./templates/project-brief-template.md)
 
-### Turn a video into structured keyframe assets
+### Turn a video into keyframe assets / 把视频转成关键帧资产
 
-Use:
+Use / 使用:
 
 - `scripts/probe_video.py`
 - `scripts/extract_keyframes.py`
 - `scripts/build_frame_index.py`
 
-Outputs:
+Outputs / 产物:
 
 - video metadata JSON
 - extracted frame PNGs
@@ -181,46 +170,40 @@ Outputs:
 - frame manifests
 - keyframe markdown table
 
-### Gate scene replacement before fusion
+### Gate scene replacement before fusion / 融合前先做换景准入判断
 
-Use the scene-match workflow and scoring helper before generating fusion prompts.
-
-References:
+References / 参考:
 
 - [workflows/05-scene-camera-match.md](./workflows/05-scene-camera-match.md)
 - [tools/scene-match-score-guide.md](./tools/scene-match-score-guide.md)
 - [scripts/build_scene_match_sheet.py](./scripts/build_scene_match_sheet.py)
 
-The default threshold contract is:
+Threshold contract / 阈值规则:
 
 - `>= 80`: `direct_fuse`
 - `60-79`: `empty_plate_first`
 - `< 60`: `new_camera_needed`
 
-## Script Reference
+## Script Reference / 脚本说明
 
 | Script | Purpose |
 |---|---|
-| `scripts/init_project.py` | Create the standard project scaffold and root manifest |
+| `scripts/init_project.py` | Create the project scaffold and root manifest |
 | `scripts/probe_video.py` | Extract normalized video metadata with `ffprobe` |
 | `scripts/extract_keyframes.py` | Extract keyframes and build a contact sheet |
-| `scripts/build_frame_index.py` | Generate frame manifests and a markdown keyframe table |
-| `scripts/build_scene_match_sheet.py` | Convert scoring input into scene-match manifests and summary table |
-| `scripts/validate_project.py` | Validate manifests against the bundled JSON schemas |
-| `scripts/compile_qc_report.py` | Summarize frame/QC readiness into a delivery report |
+| `scripts/build_frame_index.py` | Generate frame manifests and a keyframe table |
+| `scripts/build_scene_match_sheet.py` | Build scene-match manifests and summary table |
+| `scripts/validate_project.py` | Validate manifests against bundled JSON schemas |
+| `scripts/compile_qc_report.py` | Summarize frame and QC readiness |
 
-## Examples
-
-Reference workflows:
+## Examples / 示例
 
 - [Apartment MV](./examples/apartment-mv-workflow.md)
 - [Commercial Product](./examples/commercial-product-workflow.md)
 - [Concert Stage](./examples/concert-stage-workflow.md)
 - [Mars Base](./examples/mars-base-workflow.md)
 
-## Development
-
-Check CLI entrypoints:
+## Development / 开发
 
 ```bash
 python3 scripts/init_project.py --help
@@ -230,28 +213,22 @@ python3 scripts/build_frame_index.py --help
 python3 scripts/build_scene_match_sheet.py --help
 python3 scripts/validate_project.py --help
 python3 scripts/compile_qc_report.py --help
-```
-
-Audit this README:
-
-```bash
 ruby /Users/griffith/.codex/skills/github-readme/scripts/github_readme_audit.rb README.md --strict
 ```
 
-## Contributing
+## Contributing / 贡献
 
-When updating the pipeline:
+- keep workflows, templates, schemas, scripts, and examples aligned / 保持 workflow、模板、schema、脚本、示例同步
+- do not change threshold semantics in only one layer / 不要只改某一层的阈值语义
+- treat the source video as structural truth for motion, perspective, and contact / 把原视频当作动作、透视、接触关系的结构真相
 
-- keep workflow docs, templates, schemas, scripts, and examples aligned
-- do not change threshold semantics in only one layer
-- treat source video as the structural truth for motion, perspective, and contact
-
-Start from:
+Start from / 先看:
 
 - [role.md](./role.md)
 - [rule.md](./rule.md)
 - [SKILL.md](./SKILL.md)
 
-## License
+## License / 许可
 
-No license file is included yet. Add a project license before publishing for external reuse.
+No license file is included yet. Add one before external reuse.  
+当前仓库还没有 license，若要对外复用，先补许可证文件。
