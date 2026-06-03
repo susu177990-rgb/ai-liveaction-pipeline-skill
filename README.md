@@ -1,59 +1,59 @@
-# AI Liveaction Pipeline Skill / AI+实拍生产管线 Skill
+<p align="right">
+  <strong>语言 / Language:</strong>
+  <a href="#中文">中文</a> ·
+  <a href="#english">English</a>
+</p>
 
-Professional AI + live-action pipeline for turning a source video and reference assets into a structured, reviewable package with manifests, keyframes, scene-match results, preprocessing requirements, prompt packs, QC outputs, and final delivery summaries.  
-这是一个面向 AI+实拍项目的专业生产管线，用原始视频和参考资产整理出可追踪、可复检的项目包，包括 manifest、关键帧、场景匹配、预处理要求、提示词包、质检结果和最终交付摘要。
+<a id="中文"></a>
 
-## Features / 特性
+# AI Liveaction Pipeline Skill
 
-- AI + live-action shot conversion / AI+实拍镜头转换
-- keyframe extraction from source footage / 从原视频抽取关键帧
-- scene-camera matching before background replacement / 换景前做场景机位匹配
-- empty plate and fusion prompt packaging / 输出空背景与融合提示词包
-- continuity control before downstream video generation / 下游视频生成前做连续性质检
+这是一个给 `AI + 实拍` 项目用的生产管线 skill。它的作用不是单点生图，而是把一条原始视频、关键帧、场景匹配、预处理、融合、质检和交付整理成一条完整流程，让项目从“有素材”变成“可执行、可复检、可交付”。
 
-## What You Get / 仓库内容
+## 它能帮你解决什么
 
-- skill entrypoint and routing docs: [SKILL.md](./SKILL.md)
-- workflow stages: [workflows/](./workflows)
-- reusable templates: [templates/](./templates)
-- JSON schemas: [schemas/](./schemas)
-- local automation scripts: [scripts/](./scripts)
-- reference cases: [examples/](./examples)
+- 把原始视频先做信息探测和整理
+- 自动抽关键帧，形成项目级帧资产
+- 在换背景或融合前先判断机位与场景是否匹配
+- 整理空镜、融合提示词、修补需求和质检清单
+- 把项目从零散文件变成标准目录和 manifest
 
-## Repository Structure / 仓库结构
+## 功能亮点
 
-```text
-.
-├── SKILL.md
-├── role.md
-├── rule.md
-├── flowchart.md
-├── agents/
-├── examples/
-├── schemas/
-├── scripts/
-├── templates/
-├── tools/
-└── workflows/
-```
+- 视频探测、抽帧、建索引一条龙
+- 适合多人协作的标准项目目录
+- 融合前先做场景匹配，减少返工
+- 自带 schema 校验和 QC 汇总
+- 既能跑脚本，也能按阶段拆开使用
+
+## 适合谁
+
+- 做 AI+实拍广告的人
+- 做 MV、舞台片、品牌片、短剧后期流程的人
+- 需要把视频转成关键帧和制作包的人
+- 需要交给不同协作者继续处理的人
+
+## 你会拿到什么
+
+- 项目目录骨架
+- 视频探测结果
+- 关键帧图片和 contact sheet
+- 帧索引和 markdown 表
+- 场景匹配结果表
+- QC 报告
+- 最终交付摘要
 
 ## Installation / 安装
 
-- Python 3.10+
-- `ffmpeg` and `ffprobe`
-- Python packages / Python 依赖:
-  - `Pillow`
-  - `jsonschema`
-
 ```bash
-python3 -m pip install Pillow jsonschema
-ffmpeg -version
-ffprobe -version
+$ python3 -m pip install Pillow jsonschema
+$ ffmpeg -version
+$ ffprobe -version
 ```
 
 ## Usage / 用法
 
-Minimal end-to-end command flow / 最小端到端命令流程:
+最短上手流程：
 
 ```bash
 $ python3 scripts/init_project.py ./demo-project --project-name "Mars Base Spot"
@@ -64,9 +64,21 @@ $ python3 scripts/validate_project.py ./demo-project
 $ python3 scripts/compile_qc_report.py ./demo-project --output ./demo-project/08_qc/final-qc-report.md
 ```
 
-## Quickstart / 快速开始
+## 核心流程
 
-### 1. Create a project scaffold / 创建项目骨架
+```text
+/intake -> /ingest -> /keyframes -> /diagnose -> /assets -> /match -> /preprocess -> /plate -> /fusion -> /qc -> /deliver
+```
+
+你不用一开始就把所有步骤都跑完。多数项目最常见的切入点只有三个：
+
+- 先建项目骨架
+- 先抽关键帧
+- 先判断这条视频适不适合做换景和融合
+
+## 常见任务
+
+### 1. 新建一个标准项目
 
 ```bash
 python3 scripts/init_project.py ./demo-project \
@@ -76,7 +88,7 @@ python3 scripts/init_project.py ./demo-project \
   --use-case "ai-liveaction-conversion"
 ```
 
-Standard working layout / 标准目录结构:
+生成后会得到标准目录：
 
 ```text
 00_brief/
@@ -92,143 +104,120 @@ Standard working layout / 标准目录结构:
 manifests/
 ```
 
-### 2. Probe the source video / 探测源视频
+### 2. 把视频先转成关键帧资产
 
-```bash
-python3 scripts/probe_video.py ./demo-project/01_source_video/source.mp4 \
-  --output ./demo-project/00_brief/video-ingest.json
-```
-
-### 3. Extract keyframes / 抽取关键帧
-
-```bash
-python3 scripts/extract_keyframes.py \
-  ./demo-project/01_source_video/source.mp4 \
-  ./demo-project/02_keyframes/frames \
-  --percentages "0,20,40,60,80,100" \
-  --contact-sheet ./demo-project/02_keyframes/contact_sheet.jpg \
-  > ./demo-project/manifests/frames-extracted.json
-```
-
-### 4. Build frame manifests / 生成帧 manifest
-
-```bash
-python3 scripts/build_frame_index.py \
-  ./demo-project/manifests/frames-extracted.json \
-  ./demo-project/manifests/frames \
-  --markdown-output ./demo-project/02_keyframes/keyframe-table.md
-```
-
-### 5. Validate the package / 校验项目包
-
-```bash
-python3 scripts/validate_project.py ./demo-project
-```
-
-### 6. Compile final QC summary / 汇总最终 QC
-
-```bash
-python3 scripts/compile_qc_report.py \
-  ./demo-project \
-  --output ./demo-project/08_qc/final-qc-report.md
-```
-
-## Core Workflow / 核心流程
-
-```text
-/intake -> /ingest -> /keyframes -> /diagnose -> /assets -> /match -> /preprocess -> /plate -> /fusion -> /qc -> /deliver
-```
-
-Routing logic and fallback rules are documented in [flowchart.md](./flowchart.md).  
-路由逻辑和回退规则见 [flowchart.md](./flowchart.md)。
-
-## Common Tasks / 常见任务
-
-### Initialize a new client job / 初始化新项目
-
-Use `scripts/init_project.py`, then fill `00_brief/project-brief.md` and `manifests/project.json`.  
-先运行 `scripts/init_project.py`，再补全 `00_brief/project-brief.md` 和 `manifests/project.json`。
-
-References / 参考:
-
-- [workflows/00-project-intake.md](./workflows/00-project-intake.md)
-- [templates/project-brief-template.md](./templates/project-brief-template.md)
-
-### Turn a video into keyframe assets / 把视频转成关键帧资产
-
-Use / 使用:
+常用脚本：
 
 - `scripts/probe_video.py`
 - `scripts/extract_keyframes.py`
 - `scripts/build_frame_index.py`
 
-Outputs / 产物:
+你会拿到：
 
-- video metadata JSON
-- extracted frame PNGs
+- 视频元数据 JSON
+- 关键帧 PNG
 - contact sheet
-- frame manifests
-- keyframe markdown table
+- 帧 manifest
+- keyframe markdown 表
 
-### Gate scene replacement before fusion / 融合前先做换景准入判断
+### 3. 融合前先做准入判断
 
-References / 参考:
+如果你不确定某个镜头适不适合直接换景或融合，先看场景匹配结果。
+
+阈值规则：
+
+- `>= 80`：`direct_fuse`
+- `60-79`：`empty_plate_first`
+- `< 60`：`new_camera_needed`
+
+相关文件：
 
 - [workflows/05-scene-camera-match.md](./workflows/05-scene-camera-match.md)
 - [tools/scene-match-score-guide.md](./tools/scene-match-score-guide.md)
 - [scripts/build_scene_match_sheet.py](./scripts/build_scene_match_sheet.py)
 
-Threshold contract / 阈值规则:
+## 依赖
 
-- `>= 80`: `direct_fuse`
-- `60-79`: `empty_plate_first`
-- `< 60`: `new_camera_needed`
+- Python `3.10+`
+- `ffmpeg`
+- `ffprobe`
+- Python 包：
+  - `Pillow`
+  - `jsonschema`
 
-## Script Reference / 脚本说明
+## 关键脚本一览
 
-| Script | Purpose |
+| 脚本 | 作用 |
 |---|---|
-| `scripts/init_project.py` | Create the project scaffold and root manifest |
-| `scripts/probe_video.py` | Extract normalized video metadata with `ffprobe` |
-| `scripts/extract_keyframes.py` | Extract keyframes and build a contact sheet |
-| `scripts/build_frame_index.py` | Generate frame manifests and a keyframe table |
-| `scripts/build_scene_match_sheet.py` | Build scene-match manifests and summary table |
-| `scripts/validate_project.py` | Validate manifests against bundled JSON schemas |
-| `scripts/compile_qc_report.py` | Summarize frame and QC readiness |
+| `scripts/init_project.py` | 建项目骨架和根 manifest |
+| `scripts/probe_video.py` | 用 `ffprobe` 提取视频元信息 |
+| `scripts/extract_keyframes.py` | 抽关键帧并输出 contact sheet |
+| `scripts/build_frame_index.py` | 生成帧索引和 keyframe 表 |
+| `scripts/build_scene_match_sheet.py` | 生成场景匹配清单 |
+| `scripts/validate_project.py` | 用 JSON schema 校验项目结构 |
+| `scripts/compile_qc_report.py` | 汇总项目和 QC 最终状态 |
 
-## Examples / 示例
+## 仓库结构
+
+```text
+.
+├── README.md
+├── SKILL.md
+├── agents/
+├── examples/
+├── schemas/
+├── scripts/
+├── templates/
+├── tools/
+└── workflows/
+```
+
+## 推荐先看哪里
+
+- [SKILL.md](./SKILL.md)：入口说明
+- [flowchart.md](./flowchart.md)：整体流程图
+- [workflows/](./workflows)：每个阶段做什么
+- [examples/](./examples)：直接看成品流程案例
+
+## 示例案例
 
 - [Apartment MV](./examples/apartment-mv-workflow.md)
 - [Commercial Product](./examples/commercial-product-workflow.md)
 - [Concert Stage](./examples/concert-stage-workflow.md)
 - [Mars Base](./examples/mars-base-workflow.md)
 
-## Development / 开发
+---
 
-```bash
-python3 scripts/init_project.py --help
-python3 scripts/probe_video.py --help
-python3 scripts/extract_keyframes.py --help
-python3 scripts/build_frame_index.py --help
-python3 scripts/build_scene_match_sheet.py --help
-python3 scripts/validate_project.py --help
-python3 scripts/compile_qc_report.py --help
-ruby /Users/griffith/.codex/skills/github-readme/scripts/github_readme_audit.rb README.md --strict
+<a id="english"></a>
+
+## English
+
+`AI Liveaction Pipeline Skill` is a practical pipeline for `AI + live-action` production. It helps you turn source footage into a structured project package with keyframes, manifests, scene-match decisions, preprocessing tasks, QC results, and delivery summaries.
+
+## Best for
+
+- ad production
+- MV workflows
+- branded videos
+- short-form live-action to AI conversion
+- multi-person production handoff
+
+## Fast path
+
+```text
+init project -> probe video -> extract keyframes -> build frame index -> validate -> compile QC
 ```
 
-## Contributing / 贡献
+## Main outputs
 
-- keep workflows, templates, schemas, scripts, and examples aligned / 保持 workflow、模板、schema、脚本、示例同步
-- do not change threshold semantics in only one layer / 不要只改某一层的阈值语义
-- treat the source video as structural truth for motion, perspective, and contact / 把原视频当作动作、透视、接触关系的结构真相
-
-Start from / 先看:
-
-- [role.md](./role.md)
-- [rule.md](./rule.md)
-- [SKILL.md](./SKILL.md)
+- project scaffold
+- video ingest metadata
+- keyframes and contact sheet
+- frame manifests
+- scene-match sheets
+- QC report
+- delivery summary
 
 ## License / 许可
 
-No license file is included yet. Add one before external reuse.  
-当前仓库还没有 license，若要对外复用，先补许可证文件。
+仓库内如有单独许可文件，以仓库实际文件为准；当前 README 不额外重定义许可。
